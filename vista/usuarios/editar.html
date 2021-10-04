@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shoiptesz - Tienda en Linea</title>
+</head>
+<body>
+    <h1>Edición de Usuarios</h1>
+    <form action="/usuarios/modificar" method="post">
+        <label>Nombre completo:</label>
+        <input type="text" required value="Roberto Suarez Zinzun" name="nombrecompleto" placeholder="Ingresa tu nombre completo" maxlength="60">
+        <br>
+        <label>Domicilio:</label>
+        <textarea rows="2" name="domicilio" placeholder="domicilio" required cols="30">Conocido</textarea>
+        <br>
+        <label>Genero:</label>
+        <input type="radio" name="genero" >Femenino
+        <input type="radio" name="genero" checked>Masculino
+        <br>
+        <label>Telefono:</label>
+        <input type="tel" name="telefono" placeholder="###-###-####" value="351-156-9012" required>
+        <br>
+        <label>Email:</label>
+        <input type="email" name="email" required placeholder="ingresa tu email" value="rsuarez@accitesz.com" readonly>
+        <br>
+        <label>Password:</label>
+        <input type="password" placeholder="Ingresa tu password" required name="password" value="123">
+        <input type="checkbox">Ver contraseña
+        <br>
+        <label>Tipo:</label>
+        <input type="radio" name="tipo" checked>Administrador
+        <input type="radio" name="tipo">Comprador
+        <input type="radio" name="tipo">Vendedor
+        <br>
+        <label>Estatus</label>
+        <input type="checkbox" name="estatus" checked>
+        <br>
+        <button type="submit">Guardar</button>
+        <a href="/usuarios/iniciarSesion">Regresar</a>
+
+    </form>
+</body>
+</html>
