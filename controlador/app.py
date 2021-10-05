@@ -1,6 +1,6 @@
 from flask import Flask,render_template,request
 
-app=Flask(__name__,template_folder='../vista')
+app=Flask(__name__,template_folder='../vista',static_folder='../static')
 
 @app.route('/')
 def inicio():
@@ -41,6 +41,14 @@ def editarUsuario():
 @app.route('/usuarios')
 def consultaUsuarios():
     return render_template('usuarios/consulta.html')
+#Fin de la seccion de usuarios
+#Seccion de productos
+@app.route('/productos')
+def consultaProductos():
+    return render_template('productos/consulta.html')
+@app.route('/productos/editar')
+def editarProducto():
+    return 'Editando un producto'
 
 if __name__=='__main__':
     app.run(debug=True)

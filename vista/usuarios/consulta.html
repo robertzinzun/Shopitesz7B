@@ -6,18 +6,28 @@
 </head>
 <body>
     <h1>Listado de Usuarios</h1>
+    <a href="/usuarios/nuevo"><img src="{{url_for('static',filename='imagenes/add.gif')}}">Nuevo</a>
     <table border="1">
         <thead>
             <th>Nombre</th>
             <th>Email</th>
             <th>Telefono</th>
             <th>Tipo</th>
+            <th>Editar</th>
         </thead>
         <tr>
             <td>Roberto Suárez Zinzun</td>
             <td>rsuarez@accitesz.com</td>
             <td>351-156-9012</td>
             <td>Administrador</td>
+            <td><a href="/usuarios/editar"><img src="{{url_for('static',filename='imagenes/editar.png')}}"></a></td>
+        </tr>
+        <tr>
+            <td>Antonio Suárez Zinzun</td>
+            <td>asuarez@accitesz.com</td>
+            <td>351-120-9012</td>
+            <td>Vendedor</td>
+            <td><a href="/usuarios/editar"><img src="{{url_for('static',filename='imagenes/editar.png')}}"></a></td>
         </tr>
     </table>
     <a href="/">Regresar</a>

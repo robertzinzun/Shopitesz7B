@@ -5,6 +5,7 @@
     <title>Shoiptesz - Tienda en Linea</title>
 </head>
 <body>
+    <center>
     <h1>Edición de Usuarios</h1>
     <form action="/usuarios/modificar" method="post">
         <label>Nombre completo:</label>
@@ -35,9 +36,11 @@
         <label>Estatus</label>
         <input type="checkbox" name="estatus" checked>
         <br>
-        <button type="submit">Guardar</button>
-        <a href="/usuarios/iniciarSesion">Regresar</a>
+        <button type="submit"><img src="{{url_for('static',filename='imagenes/save.png')}}">Guardar</button>
+        <button><img src="{{url_for('static',filename='imagenes/eliminar.png')}}">Eliminar</button>
+        <a href="/usuarios"><img src="{{url_for('static',filename='imagenes/prev.gif')}}">Regresar</a>
 
     </form>
+    </center>
 </body>
 </html>
