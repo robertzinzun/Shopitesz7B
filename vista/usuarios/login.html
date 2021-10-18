@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>SHOPITESZ - Tienda en Linea del ITESZ</title>
-</head>
-<body>
+{% extends "comunes/base.html" %}
+{% block principal %}
     <h1>ACCESO AL SISTEMA</h1>
     <form method="post" action="/usuarios/login">
         <label>Email:</label>
@@ -15,5 +10,4 @@
         <a href="/usuarios/nuevo">Crear una cuenta</a>
         <a href="/">Principal</a>
     </form>
-</body>
-</html>
+{% endblock %}

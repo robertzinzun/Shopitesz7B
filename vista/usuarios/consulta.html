@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shoiptesz - Tienda en Linea</title>
-</head>
-<body>
+{% extends "comunes/base.html" %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
     <h1>Listado de Usuarios</h1>
     <a href="/usuarios/nuevo"><img src="{{url_for('static',filename='imagenes/add.gif')}}">Nuevo</a>
     <table border="1">
@@ -31,5 +29,4 @@
         </tr>
     </table>
     <a href="/">Regresar</a>
-</body>
-</html>
+{% endblock %}

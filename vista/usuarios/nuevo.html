@@ -11,9 +11,12 @@
                 text-align:center;
         }
     </style>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/miEstilo.css')}}">
 </head>
 <body>
-    <h1>Registro de Usuarios</h1>
+    <main>
+    <h1 id="titulo">Registro de Usuarios</h1>
+        <h1>Prueba</h1>
     <form action="/usuarios/registrar" method="post">
         <label>Nombre completo:</label>
         <input type="text" required  name="nombrecompleto" placeholder="Ingresa tu nombre completo" maxlength="60">
@@ -44,9 +47,10 @@
         <input type="checkbox" name="estatus" checked>
         <br>
         <button type="submit">Registrar</button>
-        <a href="/usuarios">Regresar</a>
-        <a href="/usuarios/iniciarSesion">Iniciar Sesion</a>
+        <a href="/usuarios" class="linkButton">Regresar</a>
+        <a href="/usuarios/iniciarSesion" class="linkButton">Iniciar Sesion</a>
 
     </form>
+    </main>
 </body>
 </html>

@@ -1,0 +1,26 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}
+    SHOPITESZ - TIENDA EN LINEA DEL ITESZ
+{% endblock %}
+{% block navbar %}
+
+{% endblock %}
+{% block content%}
+                {% block header %}
+                <header>
+                    <img src="{{url_for('static',filename='imagenes/zorro.jpeg')}}" width="80px">
+                    <h1>SHOPITESZ - TIENDA EN LINEA DEL ITESZ</h1>
+                    <img src="{{url_for('static',filename='imagenes/tec.jpeg')}}" width="80px">
+                </header>
+                {% endblock %}
+                {%block principal %}
+
+                {% endblock %}
+                {% block footer %}
+                    <footer>
+                     <hr>
+                        <img src="{{url_for('static',filename='imagenes/logoACC.png')}}">
+                        <address>Sitio desarrollado por alumnos de la Academia de ISC Octubre 2021</address>
+                    </footer>
+                {% endblock %}
+{% endblock %}

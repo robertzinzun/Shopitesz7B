@@ -1,45 +1,24 @@
-<html>
-    <head>
-        <title>Shoiptesz - Tienda en Linea</title>
-        <style>
-            h1{
-                color:red;
-                font-size:20px;
-                font-family:verdana;
-                text-align:center;
-            }
-            nav{
-                background-color:green;
-            }
-        </style>
-        <link rel="stylesheet" href="{{url_for('static',filename='css/miEstilo.css')}}">
-        <!--<link rel="stylesheet" href="../../static/css/miEstilo.css">-->
-    </head>
-    <body>
-        <header>
-            <img src="{{url_for('static',filename='imagenes/zorro.jpeg')}}" width="80px">
-            <h1>SHOPITESZ - TIENDA EN LINEA DEL ITESZ</h1>
-            <img src="{{url_for('static',filename='imagenes/tec.jpeg')}}" width="80px">
-        </header>
-        Menu
-        <nav>
-            <a href="/usuarios">Usuarios</a>
-            <a href="/productos">Productos</a>
-            <a>Categorias</a>
-            <a>Pedidos</a>
-            <a href="/usuarios/editar">Editar Perfil</a>
-        </nav>
+{% extends "comunes/base.html" %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
+<!--
+<nav>
+    <a href="/usuarios">Usuarios</a>
+    <a href="/productos">Productos</a>
+    <a>Categorias</a>
+    <a>Pedidos</a>
+    <a href="/usuarios/editar">Editar Perfil</a>
+</nav>-->
+    <div class="container">
+        <div class="row">
+            <main>
+                <H3>Bienvenido a la tienda en linea SHOPITESZ</H3>
+                <p><i>Aqui encontrarás las mejores ofertas de los productos de tu interes</i></p>
+                <a href="/usuarios/iniciarSesion" class="btn btn-success">Ingresar</a>
+            </main>
+        </div>
+    </div>
+{% endblock %}
 
-        <H3>Bienvenido a la tienda en linea SHOPITESZ</H3>
-        <p><i>Aqui encontrarás las mejores ofertas de los productos de tu interes</i></p>
-        <a href="/usuarios/iniciarSesion">Ingresar</a>
-
-
-        <footer>
-            <hr>
-            <img src="{{url_for('static',filename='imagenes/logoACC.png')}}">
-            <address>Sitio desarrollado por alumnos de la Academia de ISC Octubre 2021</address>
-            <a href="http:www.teczamora.mx">Tec Zamora</a>
-        </footer>
-    </body>
-</html>
