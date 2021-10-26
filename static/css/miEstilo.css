@@ -1,68 +1,29 @@
-h3{
-    color:#101111;
-    font-size:30px;
-    font-weight: 900;
-    font-style: italic;
-    text-align: center;
-    /*background-color:gray;
-    height:200px;
-    padding:20px;
-    border:5px solid black;*/
-}
-nav{
-    font:bold 24px verdana;
-    padding: 10px;
-    width: auto;
-    height: auto;
-    background-color:rgb(52, 104, 52);
-    border:2px solid rgb(142, 40, 40);
-    border-radius: 15px;
-}
-nav a{
-    text-decoration: none;
-    color:black;
-    text-transform: capitalize;
-}
-nav a:hover{
-   color:red; 
-   background-color: brown;
-}
-header{
-    background-color: rgb(51, 48, 51);
-    color:white;
-    text-align: center;
-    font-family: Impact;
-    font-size: larger;
-}
+
+/* Remove the navbar's default rounded borders and increase the bottom margin */
+    .navbar {
+      margin-bottom:0;
+      padding:0;
+      border-radius: 0;
+    }
+
+    /* Remove the jumbotron's default bottom margin */
+     .jumbotron {
+      margin-bottom: 0;
+      background-color:rgb(245, 248, 245);
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: rgb(245, 248, 245);
+      padding: 25px;
+    }
+
 main{
+    margin:0;
+    padding:0;
     background-image: url('../imagenes/fondo_pantalla2.jpeg');
     background-repeat: no-repeat;
     background-size: cover;
-    height: 90%;
     opacity: 0.8;
 }
-button{
-    border-radius: 15px;
-    background-color: crimson;
-    color:black;
-    font:bold 20px Arial;
-}
-.linkButton{
-    border-radius: 15px;
-    background-color: crimson;
-    color:black;
-    font:bold 20px Arial;
-    text-decoration: none;
-    padding: 2px;
-    border: 1px solid black;
-}
-#titulo{
-    color:darkred;
-    font:bold 25px "sans-serif";
-    background-color: azure;
-    padding: 2px;
-    width: 20%;
-}
-h1{
-    color:aliceblue
-}
+

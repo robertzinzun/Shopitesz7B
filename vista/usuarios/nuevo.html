@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shoiptesz - Tienda en Linea</title>
-    <style>
-        h1{
-                color:red;
-                font-size:20px;
-                font-family:verdana;
-                text-align:center;
-        }
-    </style>
-    <link rel="stylesheet" href="{{url_for('static',filename='css/miEstilo.css')}}">
-</head>
-<body>
-    <main>
+ {% extends "comunes/base.html" %}
+ {% block navbar %}
+    {% include 'comunes/menu.html' %}
+ {% endblock %}
+ {% block principal %}
     <h1 id="titulo">Registro de Usuarios</h1>
         <h1>Prueba</h1>
     <form action="/usuarios/registrar" method="post">
@@ -51,6 +39,4 @@
         <a href="/usuarios/iniciarSesion" class="linkButton">Iniciar Sesion</a>
 
     </form>
-    </main>
-</body>
-</html>
+{% endblock %}

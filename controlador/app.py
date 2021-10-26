@@ -7,7 +7,7 @@ Bootstrap(app)
 @app.route('/')
 def inicio():
     #return '<H1>Bienvenido a la tienda en linea SHOPITESZ</H1>'
-    return render_template('comunes/index.html')
+    return render_template('comunes/principal.html')
 
 @app.route('/categorias')
 def categorias():

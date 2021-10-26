@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shoiptesz - Tienda en Linea</title>
-</head>
-<body>
-    <center>
+{% extends "comunes/base.html" %}
+ {% block navbar %}
+    {% include 'comunes/menu.html' %}
+ {% endblock %}
+ {% block principal %}
     <h1>Edición de Usuarios</h1>
     <form action="/usuarios/modificar" method="post">
         <label>Nombre completo:</label>
@@ -41,6 +38,4 @@
         <a href="/usuarios"><img src="{{url_for('static',filename='imagenes/prev.gif')}}">Regresar</a>
 
     </form>
-    </center>
-</body>
-</html>
+{% endblock %}
