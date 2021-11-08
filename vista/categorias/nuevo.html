@@ -1,0 +1,32 @@
+{% extends "comunes/base.html" %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
+<div class="container">
+    <h1>Registro de Categorias</h1>
+    <form action="/categorias/registrar" method="post" enctype="multipart/form-data">
+        <div  class="form-group">
+        <label>Nombre:</label>
+        <input type="text" name="nombre"  class="form-control" placeholder="Nombre de la Categoria" maxlength="60" required>
+        </div>
+        <div class="form-group">
+            <label>Imagen:</label>
+        <input type="file" name="foto" class="form-control" placeholder="Imagen de la categoria">
+            </div>
+        <div class="form-group">
+        <button type="submit">Registrar</button>
+        <a href="/categorias">Cancelar</a>
+        </div>
+    </form>
+    {% if get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible">
+        {% for message in get_flashed_messages() %}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{message}}</strong>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

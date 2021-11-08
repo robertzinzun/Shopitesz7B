@@ -1,0 +1,36 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
+<div class="container">
+    <div class="well">
+<h1>Listado de Categorias</h1>
+        <a href="/categorias/nuevo">
+           <span class="glyphicon glyphicon-plus"></span>Agregar Categoria
+        </a>
+<table class="table table-striped">
+    <thead>
+        <th>ID</th>
+        <th>NOMBRE</th>
+        <th>IMAGEN</th>
+        <th>ESTATUS</th>
+        <th>VER</th>
+    </thead>
+    {% for cat in categorias %}
+        <tr>
+            <td>{{cat.idCategoria}}</td>
+            <td>{{cat.nombre}}</td>
+            <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
+            <td>{{cat.estatus}}</td>
+            <td>
+                <a href="/categorias/ver/{{cat.idCategoria}}">
+                <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+        </div>
+</div>
+{% endblock %}

@@ -1,18 +1,48 @@
-from flask import Flask,render_template,request
+import urllib
+
+from flask import Flask,render_template,request,flash
 from flask_bootstrap import Bootstrap
+from modelo.DAO import Categoria,db
 
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
 Bootstrap(app)
 
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://userShopitesz:Hola.123@127.0.0.1/Shopitesz_v2'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app.secret_key='cl4v3'
 @app.route('/')
 def inicio():
     #return '<H1>Bienvenido a la tienda en linea SHOPITESZ</H1>'
     return render_template('comunes/principal.html')
 
+#Seccion para categorias
 @app.route('/categorias')
 def categorias():
-    return '<h1>Listado de categorias </h1>'
+    c=Categoria()
+    categorias=c.consultaGeneral()
+    return render_template('categorias/consulta.html',categorias=categorias)
 
+@app.route('/categorias/imagen/<int:id>')
+def consultarImagenCategoria(id):
+    c=Categoria()
+    return c.consultaIndividual(id).foto
+
+@app.route('/categorias/nuevo')
+def nuevaCategoria():
+    return render_template('categorias/nuevo.html')
+
+@app.route('/categorias/registrar',methods=['post'])
+def registrarCategoria():
+    c=Categoria()
+    c.nombre=request.form['nombre']
+    imagen=request.files['foto'].read()
+    if imagen:
+        c.foto=imagen
+    c.insertar()
+    flash('Categoria registrada con exito')
+    return render_template('categorias/nuevo.html')
+
+#fin de seccion de categorias
 @app.route('/carrito')
 def carrito():
     return '<p> Consultando el carrito </p>'
@@ -53,4 +83,5 @@ def editarProducto():
     return 'Editando un producto'
 
 if __name__=='__main__':
+    db.init_app(app)
     app.run(debug=True)
