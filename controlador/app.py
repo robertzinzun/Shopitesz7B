@@ -1,6 +1,6 @@
 import urllib
 
-from flask import Flask,render_template,request,flash
+from flask import Flask,render_template,request,flash,redirect,url_for
 from flask_bootstrap import Bootstrap
 from modelo.DAO import Categoria,db
 
@@ -42,6 +42,33 @@ def registrarCategoria():
     flash('Categoria registrada con exito')
     return render_template('categorias/nuevo.html')
 
+@app.route('/categorias/ver/<int:id>')
+def consultarCategoria(id):
+    c=Categoria()
+    return render_template('categorias/editar.html',cat=c.consultaIndividual(id))
+
+@app.route('/categorias/editar',methods=['post'])
+def editarCategoria():
+    c=Categoria()
+    c.idCategoria=request.form['id']
+    c.nombre=request.form['nombre']
+    imagen=request.files['foto'].stream.read()
+    if imagen:
+        c.foto=imagen
+    estatus=request.values.get('estatus','False')
+    if estatus=='True':
+        c.estatus=True
+    else:
+        c.estatus=False
+    c.actualizar()
+    flash('Categoria editada con exito')
+    return render_template('categorias/editar.html',cat=c)
+
+@app.route('/categorias/eliminar/<int:id>')
+def eliminarCategoria(id):
+    c=Categoria()
+    c.eliminar(id)
+    return redirect(url_for('categorias'))
 #fin de seccion de categorias
 @app.route('/carrito')
 def carrito():
