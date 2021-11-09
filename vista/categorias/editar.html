@@ -3,15 +3,6 @@
     {% include 'comunes/menu.html' %}
 {% endblock %}
 {% block principal %}
-<script>
-    function eliminar(id,nombre){
-        resp=confirm("¿ Estas seguro de eliminar la categoria:"+nombre+" ?");
-        if(resp==true){
-          location.href="/categorias/eliminar/"+id
-        }
-        return;
-    }
-</script>
 <div class="container">
   <h1>Edición de Categorias</h1>
   <form action="/categorias/editar" method="post" enctype="multipart/form-data">
@@ -41,7 +32,7 @@
       <button type="submit" class="btn btn-info">
           <span class="glyphicon glyphicon-floppy-disk"></span>Guardar
       </button>
-      <button type="button" onclick="eliminar({{cat.idCategoria}},'{{cat.nombre}}')" class="btn btn-info">
+      <button type="button"  class="btn btn-info" data-toggle="modal" data-target="#eliminar">
           <span class="glyphicon glyphicon-trash"></span>Eliminar
       </button>
       <a href="/categorias" class="btn btn-danger">
@@ -79,8 +70,26 @@
 
   </div>
 </div>
+      <!-- Modal -->
+<div id="eliminar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
 
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Eliminación de Categorias</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿ Estas seguro de eliminar la categoria {{cat.nombre}} ?</p>
+      </div>
+      <div class="modal-footer">
+          <a href="/categorias/eliminar/{{cat.idCategoria}}" class="btn btn-info">Aceptar</a>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
 
-
+  </div>
+</div>
 </div>
 {% endblock %}

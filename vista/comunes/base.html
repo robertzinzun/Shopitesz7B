@@ -10,6 +10,9 @@
 {% endblock %}
 
 {% block body %}
+{% block scripts %}
+    {{super()}}
+{% endblock %}
 <header>
 <div class="jumbotron">
     <div class="container text-center">
@@ -34,8 +37,7 @@
 
 {% endblock %}
 {% block content%}
-
-    <main class="container">
+    <main class="container-fluid">
         <h1 class="text text-center">Bienvenido a la Tienda en Linea del ITESZ</h1>
         {%block principal %}
 
@@ -58,8 +60,5 @@
                 </div>
             </div>
         </footer>
-{% endblock %}
-{% block scripts %}
-    {{super()}}
 {% endblock %}
 {% endblock %}
