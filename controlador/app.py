@@ -2,7 +2,8 @@ import urllib
 
 from flask import Flask,render_template,request,flash,redirect,url_for
 from flask_bootstrap import Bootstrap
-from modelo.DAO import Categoria,db
+from modelo.DAO import Categoria,db,Usuario
+from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
 
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
 Bootstrap(app)
@@ -10,6 +11,15 @@ Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://userShopitesz:Hola.123@127.0.0.1/Shopitesz_v2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.secret_key='cl4v3'
+
+login_manager=LoginManager()
+login_manager.init_app(app)
+login_manager.login_view='login'
+
+@login_manager.user_loader
+def load_user(id):
+    return Usuario.query.get(int(id))
+
 @app.route('/')
 def inicio():
     #return '<H1>Bienvenido a la tienda en linea SHOPITESZ</H1>'
@@ -28,10 +38,12 @@ def consultarImagenCategoria(id):
     return c.consultaIndividual(id).foto
 
 @app.route('/categorias/nuevo')
+@login_required
 def nuevaCategoria():
     return render_template('categorias/nuevo.html')
 
 @app.route('/categorias/registrar',methods=['post'])
+@login_required
 def registrarCategoria():
     c=Categoria()
     c.nombre=request.form['nombre']
@@ -43,11 +55,13 @@ def registrarCategoria():
     return render_template('categorias/nuevo.html')
 
 @app.route('/categorias/ver/<int:id>')
+@login_required
 def consultarCategoria(id):
     c=Categoria()
     return render_template('categorias/editar.html',cat=c.consultaIndividual(id))
 
 @app.route('/categorias/editar',methods=['post'])
+@login_required
 def editarCategoria():
     c=Categoria()
     c.idCategoria=request.form['id']
@@ -65,6 +79,7 @@ def editarCategoria():
     return render_template('categorias/editar.html',cat=c)
 
 @app.route('/categorias/eliminar/<int:id>')
+@login_required
 def eliminarCategoria(id):
     c=Categoria()
     c.eliminar(id)
@@ -76,12 +91,12 @@ def carrito():
 
 #Seccion para la administración de usuarios
 @app.route('/usuarios/login',methods=['POST'])
-def login():
+def validar():
     email=request.form['email']
     return 'Validando la cuenta del usuario:'+email
 
 @app.route('/usuarios/iniciarSesion')
-def iniciarSesion():
+def login():
     return  render_template('usuarios/login.html')
 
 @app.route('/usuarios/nuevo')
