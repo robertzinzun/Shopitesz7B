@@ -1,11 +1,9 @@
 {% extends "comunes/base.html" %}
-<!--{% block navbar %}
-    {% include 'comunes/menu.html' %}
-{% endblock %}-->
+
 {% block principal %}
 <div class="well">
 <h1>ACCESO AL SISTEMA</h1>
-<form method="post" action="/usuarios/login">
+<form method="post" action="/usuarios/validarSesion">
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -33,5 +31,13 @@
     </div>
     </div>
 </form>
+{% if get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible">
+        {% for message in get_flashed_messages() %}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{message}}</strong>
+        {% endfor %}
+    </div>
+{% endif %}
 </div>
 {% endblock %}

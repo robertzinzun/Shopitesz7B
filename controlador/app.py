@@ -1,6 +1,6 @@
 import urllib
 
-from flask import Flask,render_template,request,flash,redirect,url_for
+from flask import Flask,render_template,request,flash,redirect,url_for,abort
 from flask_bootstrap import Bootstrap
 from modelo.DAO import Categoria,db,Usuario
 from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
@@ -57,8 +57,11 @@ def registrarCategoria():
 @app.route('/categorias/ver/<int:id>')
 @login_required
 def consultarCategoria(id):
-    c=Categoria()
-    return render_template('categorias/editar.html',cat=c.consultaIndividual(id))
+    if current_user.is_authenticated and current_user.is_admin():
+        c=Categoria()
+        return render_template('categorias/editar.html',cat=c.consultaIndividual(id))
+    else:
+        abort(404)
 
 @app.route('/categorias/editar',methods=['post'])
 @login_required
@@ -81,23 +84,38 @@ def editarCategoria():
 @app.route('/categorias/eliminar/<int:id>')
 @login_required
 def eliminarCategoria(id):
-    c=Categoria()
-    c.eliminar(id)
-    return redirect(url_for('categorias'))
+    if current_user.is_authenticated and current_user.is_admin():
+        c=Categoria()
+        c.eliminar(id)
+        return redirect(url_for('categorias'))
+    else:
+        abort(404)
 #fin de seccion de categorias
 @app.route('/carrito')
 def carrito():
     return '<p> Consultando el carrito </p>'
 
 #Seccion para la administración de usuarios
-@app.route('/usuarios/login',methods=['POST'])
-def validar():
-    email=request.form['email']
-    return 'Validando la cuenta del usuario:'+email
-
 @app.route('/usuarios/iniciarSesion')
 def login():
-    return  render_template('usuarios/login.html')
+    if current_user.is_authenticated:
+        return render_template('comunes/principal.html')
+    else:
+        return  render_template('usuarios/login.html')
+
+@app.route('/usuarios/validarSesion',methods=['post'])
+def validarSesion():
+    email=request.form['email']
+    password=request.form['password']
+    user=Usuario()
+    user=user.validar(email,password)
+    if user!=None:
+        print(user.nombrecompleto)
+        login_user(user)
+        return render_template('comunes/principal.html')
+    else:
+        flash('! Datos de Sesión incorrectos !')
+        return render_template('usuarios/login.html')
 
 @app.route('/usuarios/nuevo')
 def nuevoUsuario():
@@ -115,6 +133,11 @@ def editarUsuario():
 @app.route('/usuarios')
 def consultaUsuarios():
     return render_template('usuarios/consulta.html')
+
+@app.route('/cerrarSesion')
+def cerrarSesion():
+    logout_user()
+    return redirect(url_for('login'))
 #Fin de la seccion de usuarios
 #Seccion de productos
 @app.route('/productos')
@@ -123,7 +146,10 @@ def consultaProductos():
 @app.route('/productos/editar')
 def editarProducto():
     return 'Editando un producto'
-
+#Seccion de paginas de error
+@app.errorhandler(404)
+def error_404(e):
+    return render_template('comunes/error_404.html'),404
 if __name__=='__main__':
     db.init_app(app)
     app.run(debug=True)

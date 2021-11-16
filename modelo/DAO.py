@@ -90,5 +90,6 @@ class Usuario(UserMixin,db.Model):
         return self.query.all()
 
     def validar(self,email,password):
-        usuario=self.query.filter_by(Usuario.email==email,Usuario.password==password,Usuario.estatus==True).first()
+        usuario=None
+        usuario=self.query.filter(Usuario.email==email,Usuario.password==password,Usuario.estatus==True).first()
         return usuario
