@@ -130,6 +130,26 @@ def registrarUsuario():
 def editarUsuario():
     return  render_template('usuarios/editar.html')
 
+@app.route('/usuarios/modificar',methods=['POST'])
+def modificarUsuario():
+    try:
+        u=Usuario()
+        u.idUsuario=current_user.idUsuario
+        u.nombrecompleto=request.form['nombre']
+        u.domicilio=request.form['domicilio']
+        u.telefono=request.form['telefono']
+        u.tipo=request.form['tipo']
+        u.password=request.form['password']
+        u.sexo=request.form['sexo']
+        u.actualizar()
+        login_user(u.consultaIndividual(u.idUsuario))
+        flash('! Datos modificados con exito !')
+    except:
+        flash('!Error al modificar el usuario!')
+
+    return redirect(url_for('editarUsuario'))
+
+
 @app.route('/usuarios')
 def consultaUsuarios():
     return render_template('usuarios/consulta.html')

@@ -39,6 +39,7 @@ class Usuario(UserMixin,db.Model):
     password=Column(String(20),nullable=False)
     tipo=Column(String(10),nullable=False,default='Comprador')
     estatus=Column(Boolean,default=True)
+    sexo=Column(String(1),nullable=False)
 
     def is_authenticated(self):
         return True

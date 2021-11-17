@@ -6,36 +6,66 @@
     <h1>Edición de Usuarios</h1>
     <form action="/usuarios/modificar" method="post">
         <label>Nombre completo:</label>
-        <input type="text" required value="Roberto Suarez Zinzun" name="nombrecompleto" placeholder="Ingresa tu nombre completo" maxlength="60">
+        <input type="text" required value="{{current_user.nombrecompleto}}" name="nombre" placeholder="Ingresa tu nombre completo" maxlength="60">
         <br>
         <label>Domicilio:</label>
-        <textarea rows="2" name="domicilio" placeholder="domicilio" required cols="30">Conocido</textarea>
+        <textarea rows="2" name="domicilio" placeholder="domicilio" required cols="30">{{current_user.domicilio}}</textarea>
         <br>
         <label>Genero:</label>
-        <input type="radio" name="genero" >Femenino
-        <input type="radio" name="genero" checked>Masculino
-        <br>
+        {% if current_user.sexo=='F' %}
+            <input type="radio" name="sexo" checked value="F">Femenino
+            <input type="radio" name="sexo" value="M">Masculino
+        {% else %}
+            <input type="radio" name="sexo" value="F">Femenino
+            <input type="radio" name="sexo" checked value="M">Masculino
+        {% endif %}
+            <br>
         <label>Telefono:</label>
-        <input type="tel" name="telefono" placeholder="###-###-####" value="351-156-9012" required>
+        <input type="tel" name="telefono" placeholder="###-###-####" value="{{current_user.telefono}}" required>
         <br>
         <label>Email:</label>
-        <input type="email" name="email" required placeholder="ingresa tu email" value="rsuarez@accitesz.com" readonly>
+        <input type="email" name="email" required placeholder="ingresa tu email" value="{{current_user.email}}" readonly>
         <br>
         <label>Password:</label>
-        <input type="password" placeholder="Ingresa tu password" required name="password" value="123">
+        <input type="password" placeholder="Ingresa tu password" required name="password" value="{{current_user.password}}">
         <input type="checkbox">Ver contraseña
         <br>
         <label>Tipo:</label>
-        <input type="radio" name="tipo" checked>Administrador
-        <input type="radio" name="tipo">Comprador
-        <input type="radio" name="tipo">Vendedor
-        <br>
-        <label>Estatus</label>
-        <input type="checkbox" name="estatus" checked>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        {% if current_user.tipo=='Administrador' %}
+            <input type="radio" name="tipo" checked value="Administrador">Administrador
+            <input type="radio" name="tipo" value="Comprador">Comprador
+            <input type="radio" name="tipo" value="Vendedor">Vendedor
+        {% endif %}
+        {% if current_user.tipo=='Comprador' %}
+            <input type="radio" name="tipo" value="Administrador">Administrador
+            <input type="radio" name="tipo" checked  value="Comprador">Comprador
+            <input type="radio" name="tipo" value="Vendedor">Vendedor
+        {% endif %}
+        {% if current_user.tipo=='Vendedor' %}
+            <input type="radio" name="tipo" value="Administrador">Administrador
+            <input type="radio" name="tipo" value="Comprador">Comprador
+            <input type="radio" name="tipo" checked value="Vendedor">Vendedor
+        {% endif %}
+        {% else %}
+        {% if current_user.tipo=='Comprador' %}
+            <input type="radio" name="tipo" checked  value="Comprador">Comprador
+        {% endif %}
+        {% if current_user.tipo=='Vendedor' %}
+            <input type="radio" name="tipo" value="Comprador">Comprador
+            <input type="radio" name="tipo" checked value="Vendedor">Vendedor
+        {% endif %}
+        {% endif %}
         <br>
         <button type="submit"><img src="{{url_for('static',filename='imagenes/save.png')}}">Guardar</button>
-        <button><img src="{{url_for('static',filename='imagenes/eliminar.png')}}">Eliminar</button>
-        <a href="/usuarios"><img src="{{url_for('static',filename='imagenes/prev.gif')}}">Regresar</a>
-
+        <a href="/"><img src="{{url_for('static',filename='imagenes/prev.gif')}}">Regresar</a>
     </form>
-{% endblock %}
+    {% if get_flashed_messages() %}
+        <div class="alert alert-success alert-dismissible">
+            {% for message in get_flashed_messages() %}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>{{message}}</strong>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endblock %}
