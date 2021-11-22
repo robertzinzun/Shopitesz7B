@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shopitesz</title>
-</head>
-<body>
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
+<a href="/productos/nuevo">Agregar producto</a>
+<div class="well">
     <h1>Listado de Productos</h1>
     <select name="categoria">
         <option>--Selecciona la categoria --</option>
@@ -13,21 +13,29 @@
         <option>Calzado</option>
     </select>
     <label>Elige el color</label><input type="color">
-    <table>
+    <table class="table">
         <THEAD>
             <TH>ID</TH>
             <TH>NOMBRE</TH>
             <TH>PRECIO</TH>
             <TH>EXISTENCIA</TH>
+            <th>Categoria</th>
             <TH>EDITAR</TH>
         </THEAD>
-        <TR>
-            <td>1</td>
-            <td>Lapto Dell Inspiron</td>
-            <td>$25000</td>
-            <td>5</td>
-            <td><a href="/productos/editar">Ver</a></td>
-        </tr>
+        {% for prod in productos %}
+            <tr>
+               <td>{{prod.idProducto}}</td>
+               <td>{{prod.nombre}}</td>
+               <td>{{prod.precio}}</td>
+                <td>{{prod.existencia}}</td>
+                <td>{{prod.categoria.nombre}}</td>
+                <td>
+                    <a href="/productos/ver/{{prod.idProducto}}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column,Integer,String,Boolean,BLOB
+from sqlalchemy import Column,Integer,String,Boolean,BLOB,ForeignKey,Float
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 
 db=SQLAlchemy()
 class Categoria(db.Model):
@@ -20,6 +21,8 @@ class Categoria(db.Model):
     def eliminar(self,id):
         obj=self.consultaIndividual(id)
         db.session.delete(obj)
+        # obj.estatus=False ='I'
+        # db.session.merge(obj)
         db.session.commit()
 
     def actualizar(self):
@@ -94,3 +97,22 @@ class Usuario(UserMixin,db.Model):
         usuario=None
         usuario=self.query.filter(Usuario.email==email,Usuario.password==password,Usuario.estatus==True).first()
         return usuario
+
+class Producto(db.Model):
+    __tablename__='Productos'
+    idProducto=Column(Integer,primary_key=True)
+    idCategoria=Column(Integer,ForeignKey('Categorias.idCategoria'))
+    nombre=Column(String(50),nullable=False)
+    decripcion=Column(String(100),nullable=True)
+    precio=Column(Float,nullable=False,default=1)
+    existencia=Column(Integer,nullable=False,default=1)
+    Color=Column(String(25),nullable=False)
+    marca=Column(String(50),nullable=False)
+    costoEnvio=Column(Float,nullable=False)
+    estatus=Column(Boolean,nullable=False,default=True)
+    foto=Column(BLOB,nullable=False)
+    categoria=relationship('Categoria',lazy='select')
+
+    def consultaGeneral(self):
+        return self.query.all()
+

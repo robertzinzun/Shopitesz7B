@@ -2,7 +2,7 @@ import urllib
 
 from flask import Flask,render_template,request,flash,redirect,url_for,abort
 from flask_bootstrap import Bootstrap
-from modelo.DAO import Categoria,db,Usuario
+from modelo.DAO import Categoria,db,Usuario, Producto
 from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
 
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
@@ -160,12 +160,25 @@ def cerrarSesion():
     return redirect(url_for('login'))
 #Fin de la seccion de usuarios
 #Seccion de productos
+
 @app.route('/productos')
 def consultaProductos():
-    return render_template('productos/consulta.html')
+    p=Producto()
+    return render_template('productos/consulta.html',productos=p.consultaGeneral())
+
 @app.route('/productos/editar')
 def editarProducto():
     return 'Editando un producto'
+
+@app.route('/productos/nuevo')
+def nuevoProducto():
+    c=Categoria()
+    return render_template('productos/nuevo.html',categorias=c.consultaGeneral())
+
+@app.route('/productos/registrar',methods=['post'])
+def registrarProducto():
+    idCategoria=request.form['categoria']
+    return "Categoria seleccionada:"+str(idCategoria)
 #Seccion de paginas de error
 @app.errorhandler(404)
 def error_404(e):

@@ -22,35 +22,33 @@
         {% endif %}
     </thead>
     {% for cat in categorias %}
-    {% if cat.estatus==True %}
         <tr>
-            <td>{{cat.idCategoria}}</td>
-            <td>{{cat.nombre}}</td>
-            <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
-            {% if current_user.is_authenticated and current_user.is_admin() %}
-            <td>{{cat.estatus}}</td>
-            <td>
-                <a href="/categorias/ver/{{cat.idCategoria}}">
-                <span class="glyphicon glyphicon-eye-open"></span>
-                </a>
-            </td>
+            {% if cat.estatus==True %}
+                <td>{{cat.idCategoria}}</td>
+                <td>{{cat.nombre}}</td>
+                <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
+                {% if current_user.is_authenticated and current_user.is_admin()%}
+                    <td>{{cat.estatus}}</td>
+                    <td>
+                        <a href="/categorias/ver/{{cat.idCategoria}}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                    </td>
+                {% endif %}
+            {% else %}
+                {% if current_user.is_authenticated and current_user.is_admin() and cat.estatus==False%}
+                    <td>{{cat.idCategoria}}</td>
+                    <td>{{cat.nombre}}</td>
+                    <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
+                    <td>{{cat.estatus}}</td>
+                    <td>
+                        <a href="/categorias/ver/{{cat.idCategoria}}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                    </td>
+                {% endif %}
             {% endif %}
         </tr>
-    {% else %}
-        {% if current_user.is_authenticated and current_user.is_admin() %}
-        <td>{{cat.idCategoria}}</td>
-            <td>{{cat.nombre}}</td>
-            <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
-
-            <td>{{cat.estatus}}</td>
-            <td>
-                <a href="/categorias/ver/{{cat.idCategoria}}">
-                <span class="glyphicon glyphicon-eye-open"></span>
-                </a>
-            </td>
-        {% endif %}
-    {% endif %}
-
     {% endfor %}
 </table>
         </div>
