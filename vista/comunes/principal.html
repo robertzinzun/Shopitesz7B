@@ -3,61 +3,18 @@
 {% include 'comunes/menu.html' %}
 {% endblock %}
 {% block principal %}
+<br>
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">TELEFONIA</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/telefonia.jpg')}}"
-            class="img-responsive" style="width:80%" alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="panel panel-danger">
-        <div class="panel-heading">ROPA Y CALZADO</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/ropa.jpg')}}" class="img-responsive"
-            style="width:80%" alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="panel panel-success">
-        <div class="panel-heading">LINEA BLANCA</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/linea_blanca.jpg')}}"
-            class="img-responsive" style="width:80%" alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
+    {% for cat in categorias %}
+       <div class="col-sm-4">
+          <div class="panel panel-primary">
+              <div class="panel-heading">{{cat.nombre}}</div>
+              <div class="panel-body"><img src="/categorias/imagen/{{cat.idCategoria}}" class="img-responsive" style="width:80%" alt="Image"></div>
+              <div class="panel-footer"><a>Ver Productos</a></div>
+          </div>
+       </div>
+    {% endfor %}
   </div>
-</div><br>
-
-<div class="container">
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">EQUIPO DE COMPUTO</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/equipoComputo.jpg')}}"
-            class="img-responsive" style="width:80%" alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">VIDEOJUEGOS</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/videojuegos.jpg')}}"
-            class="img-responsive" style="width:80%" alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">DEPORTES</div>
-        <div class="panel-body"><img src="{{url_for('static',filename='imagenes/deportes.jpg')}}" style="width:80%"
-            alt="Image"></div>
-        <div class="panel-footer"><a>Ver..</a></div>
-      </div>
-    </div>
-  </div>
-</div><br><br>
+</div>
 {% endblock %}

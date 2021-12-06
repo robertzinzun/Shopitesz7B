@@ -22,8 +22,8 @@ def load_user(id):
 
 @app.route('/')
 def inicio():
-    #return '<H1>Bienvenido a la tienda en linea SHOPITESZ</H1>'
-    return render_template('comunes/principal.html')
+    c=Categoria()
+    return render_template('comunes/principal.html',categorias=c.consultaGeneral())
 
 #Seccion para categorias
 @app.route('/categorias')
@@ -112,7 +112,8 @@ def validarSesion():
     if user!=None:
         print(user.nombrecompleto)
         login_user(user)
-        return render_template('comunes/principal.html')
+        c = Categoria()
+        return render_template('comunes/principal.html', categorias=c.consultaGeneral())
     else:
         flash('! Datos de Sesión incorrectos !')
         return render_template('usuarios/login.html')
