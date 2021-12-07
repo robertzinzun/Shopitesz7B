@@ -4,7 +4,7 @@ from flask import Flask,render_template,request,flash,redirect,url_for,abort
 from flask_bootstrap import Bootstrap
 from modelo.DAO import Categoria,db,Usuario, Producto
 from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
-
+import json
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
 Bootstrap(app)
 
@@ -124,8 +124,20 @@ def nuevoUsuario():
 
 @app.route('/usuarios/registrar',methods=['post'])
 def registrarUsuario():
-    nombre=request.form['nombrecompleto']
-    return 'registrando al usuario:'+nombre
+    try:
+        u = Usuario()
+        u.nombrecompleto = request.form['nombrecompleto']
+        u.domicilio = request.form['domicilio']
+        u.telefono = request.form['telefono']
+        u.tipo = request.form['tipo']
+        u.password = request.form['password']
+        u.sexo = request.form['genero']
+        u.email=request.form['email']
+        u.insertar()
+        flash('! Usuario registrado con exito !')
+    except:
+        flash('!Error al registrar el usuario!')
+    return redirect(url_for('nuevoUsuario'))
 
 @app.route('/usuarios/editar')
 def editarUsuario():
@@ -159,6 +171,11 @@ def consultaUsuarios():
 def cerrarSesion():
     logout_user()
     return redirect(url_for('login'))
+
+@app.route('/usuarios/email/<string:email>',methods=['Get'])
+def consultarEmail(email):
+    usuario=Usuario()
+    return json.dumps(usuario.consultarPorEmail(email))
 #Fin de la seccion de usuarios
 #Seccion de productos
 

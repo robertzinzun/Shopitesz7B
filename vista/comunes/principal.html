@@ -10,8 +10,12 @@
        <div class="col-sm-4">
           <div class="panel panel-primary">
               <div class="panel-heading">{{cat.nombre}}</div>
-              <div class="panel-body"><img src="/categorias/imagen/{{cat.idCategoria}}" class="img-responsive" style="width:80%" alt="Image"></div>
-              <div class="panel-footer"><a>Ver Productos</a></div>
+              <div class="panel-body">
+                  <img src="/categorias/imagen/{{cat.idCategoria}}" class="img-responsive" style="width:80%" alt="Image">
+              </div>
+              <div class="panel-footer">
+                  <a href="/productos/categoria/{{cat.idCategoria}}">Ver Productos</a>
+              </div>
           </div>
        </div>
     {% endfor %}

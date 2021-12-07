@@ -98,6 +98,18 @@ class Usuario(UserMixin,db.Model):
         usuario=self.query.filter(Usuario.email==email,Usuario.password==password,Usuario.estatus==True).first()
         return usuario
 
+    def consultarPorEmail(self,email):
+        salida={"estatus":"","mensaje":""}
+        usuario=None
+        usuario=self.query.filter(Usuario.email==email).first()
+        if usuario!=None:
+            salida['estatus']='Error'
+            salida['mensaje']='La cuenta:'+email+' ya se encuentra registrada.'
+        else:
+            salida['estatus'] = 'Ok'
+            salida['mensaje'] = 'La cuenta:' + email + ' esta libre.'
+        return salida
+
 class Producto(db.Model):
     __tablename__='Productos'
     idProducto=Column(Integer,primary_key=True)
