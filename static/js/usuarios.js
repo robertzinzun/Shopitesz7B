@@ -19,14 +19,14 @@ function evaluarTelefono(cadena){
     var patron=/[0-9]{3}-[0-9]{3}-[0-9]{4}/;
     var res=patron.test(cadena);
     if(res==false){
-        salida="Debes informar un número telefonico con el siguiente formato:###-###-#### \n";
+        salida="Debes informar un número telefonico con el siguiente formato:###-###-#### <br>";
     }
     return salida;
 }
 function validarLongitudPassword(cadena){
     var salida="";
     if(cadena.length<8){
-        salida="Debes introducir un password de al menos 8 caracteres.\n";
+        salida="Debes introducir un password de al menos 8 caracteres.<br>";
     }
     return salida;
 }
@@ -44,14 +44,14 @@ function tieneDigito(cadena){
 function passwordRobusto(cadena){
     var salida="";
     if(!tieneDigito(cadena)){
-        salida="El password debe incluir al menos un digito \n";
+        salida="El password debe incluir al menos un digito <br>";
 
     }
     if(!tieneMayuscula(cadena)){
-        salida+='El password debe incluir al menos una mayuscula \n';
+        salida+='El password debe incluir al menos una mayuscula <br>';
     }
     if(!tieneCaracterEspecial(cadena)){
-        salida+='El password debe incluir al menos un caracter especial \n';
+        salida+='El password debe incluir al menos un caracter especial <br>';
     }
     return salida;
 }

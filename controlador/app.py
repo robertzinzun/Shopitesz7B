@@ -2,7 +2,7 @@ import urllib
 
 from flask import Flask,render_template,request,flash,redirect,url_for,abort
 from flask_bootstrap import Bootstrap
-from modelo.DAO import Categoria,db,Usuario, Producto
+from modelo.DAO import Categoria,db,Usuario, Producto, Carrito, Tarjeta, Pedido
 from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
 import json
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
@@ -91,10 +91,6 @@ def eliminarCategoria(id):
     else:
         abort(404)
 #fin de seccion de categorias
-@app.route('/carrito')
-def carrito():
-    return '<p> Consultando el carrito </p>'
-
 #Seccion para la administración de usuarios
 @app.route('/usuarios/iniciarSesion')
 def login():
@@ -184,6 +180,16 @@ def consultaProductos():
     p=Producto()
     return render_template('productos/consulta.html',productos=p.consultaGeneral())
 
+@app.route('/productos/imagen/<int:id>')
+def consultarImagenProducto(id):
+    p=Producto()
+    return p.consultaIndividual(id).foto
+
+@app.route('/productos/categoria/<int:id>')
+def consultarPorCategoria(id):
+    p=Producto()
+    return render_template('productos/consulta.html',productos=p.consultarPorCategoria(id))
+
 @app.route('/productos/editar')
 def editarProducto():
     return 'Editando un producto'
@@ -197,6 +203,80 @@ def nuevoProducto():
 def registrarProducto():
     idCategoria=request.form['categoria']
     return "Categoria seleccionada:"+str(idCategoria)
+#seccion del carrito
+@app.route('/carrito/agregar',methods=['post'])
+@login_required
+def agregarCarrito():
+    ojson=request.get_json()
+    ojson["idUsuario"]=current_user.idUsuario
+    carrito=Carrito()
+    salida=carrito.agregar(ojson)
+    salida['productos']=current_user.consultarCantidadCarrito()
+    #flash('Producto Agregado con Exito')
+    return salida
+
+@app.route('/carrito',methods=['get'])
+@login_required
+def consultarCarrito():
+    if current_user.is_authenticated and current_user.is_comprador():
+        carrito=Carrito()
+        return render_template('carrito/consulta.html',carrito=carrito.consultaGeneral(current_user.idUsuario))
+    else:
+        abort(404)
+
+@app.route('/carrito/eliminar/<int:id>',methods=['get'])
+@login_required
+def eliminarCarrito(id):
+    if current_user.is_authenticated and current_user.is_comprador():
+        try:
+            carrito=Carrito()
+            carrito.eliminar(id)
+            flash('Producto del  carrito eliminado con exito.')
+        except:
+            flash('Error al eliminar el producto del carrito.')
+        return redirect(url_for('consultarCarrito'))
+    else:
+        abort(404)
+#fin seccion de carrito
+
+#seccion tarjetas
+@app.route('/tarjetas/<int:id>',methods=['GET'])
+@login_required
+def consultarTarjeta(id):
+    if current_user.is_authenticated and  current_user.is_comprador():
+        tarjeta=Tarjeta()
+        tarjeta=tarjeta.consultaIndividual(id)
+        dict_tarjeta={"idTarjeta":tarjeta.idTarjeta,"saldo":tarjeta.saldo,"banco":tarjeta.emisor}
+        return json.dumps(dict_tarjeta)
+    else:
+        msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
+        return json.dumps(msg)
+#fin seccion de tarjetas
+#seccion de pedidos
+@app.route('/pedidos/registrar',methods=['post'])
+@login_required
+def registrarPedido():
+    if current_user.is_authenticated and  current_user.is_comprador():
+        ojson=request.get_json()
+        ojson["idComprador"]=current_user.idUsuario
+        pedido=Pedido()
+        print(ojson)
+        salida=pedido.agregar(ojson)
+        return json.dumps(salida)
+    else:
+        msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
+        return json.dumps(msg)
+
+#fin seccion pedidos
+@app.route('/prueba')
+def prueba():
+    return render_template('comunes/prueba.html')
+@app.route('/ruta',methods=['post'])
+def ruta():
+    fecha=request.form['fecha']
+    cad=fecha.split("-")
+    cadFecha=cad[2]+"/"+cad[1]+"/"+cad[0]
+    return cadFecha
 #Seccion de paginas de error
 @app.errorhandler(404)
 def error_404(e):

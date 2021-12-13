@@ -1,7 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column,Integer,String,Boolean,BLOB,ForeignKey,Float
+from sqlalchemy import Column,Integer,String,Boolean,BLOB,ForeignKey,Float,Date
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
+import datetime
+import json
 
 db=SQLAlchemy()
 class Categoria(db.Model):
@@ -109,6 +111,8 @@ class Usuario(UserMixin,db.Model):
             salida['estatus'] = 'Ok'
             salida['mensaje'] = 'La cuenta:' + email + ' esta libre.'
         return salida
+    def consultarCantidadCarrito(self):
+        return len(self.carrito)
 
 class Producto(db.Model):
     __tablename__='Productos'
@@ -118,7 +122,7 @@ class Producto(db.Model):
     decripcion=Column(String(100),nullable=True)
     precio=Column(Float,nullable=False,default=1)
     existencia=Column(Integer,nullable=False,default=1)
-    Color=Column(String(25),nullable=False)
+    color=Column(String(25),nullable=False)
     marca=Column(String(50),nullable=False)
     costoEnvio=Column(Float,nullable=False)
     estatus=Column(Boolean,nullable=False,default=True)
@@ -128,3 +132,127 @@ class Producto(db.Model):
     def consultaGeneral(self):
         return self.query.all()
 
+    def consultaIndividual(self, id):
+        return self.query.get(id)
+
+    def consultarPorCategoria(self,id):
+        return self.query.filter(Producto.idCategoria==id).all()
+
+class Carrito(db.Model):
+    __tablename__='Carrito'
+    idCarrito=Column(Integer,primary_key=True)
+    idUsuario=Column(Integer,ForeignKey('Usuarios.idUsuario'))
+    idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
+    fecha=Column(Date,default=datetime.date.today())
+    cantidad=Column(Integer,nullable=False,default=1)
+    estatus=Column(String,nullable=False,default=True)
+    producto=relationship('Producto',backref='carrito',lazy='select')
+    usuario=relationship('Usuario',backref='carrito',lazy='select')
+
+    def agregar(self,ojson):
+        salida={"estatus":"","mensaje":""}
+        try:
+            self.from_json(ojson)
+            db.session.add(self)
+            db.session.commit()
+            salida["estatus"] = "Ok"
+            salida["mensaje"] = "Producto agregado con exito"
+        except:
+            salida["estatus"]="Error"
+            salida["mensaje"]="Error al agregar el producto a la cesta"
+        return salida
+    def from_json(self,ojson):
+        self.idUsuario=ojson["idUsuario"]
+        self.idProducto = ojson["idProducto"]
+        self.cantidad=ojson["cantidad"]
+
+    def consultaGeneral(self,idUsuario):
+        return self.query.filter(Carrito.idUsuario==idUsuario).all()
+
+    def consultaIndividual(self, id):
+        return self.query.get(id)
+
+    def eliminar(self, id):
+        obj = self.consultaIndividual(id)
+        db.session.delete(obj)
+        db.session.commit()
+
+class Tarjeta(db.Model):
+    __tablename__ = 'Tarjetas'
+    idTarjeta = Column(Integer, primary_key=True)
+    idUsuario= Column(Integer,ForeignKey('Usuarios.idUsuario'))
+    noTarjeta = Column(String, nullable=False)
+    saldo = Column(Float, nullable=False)
+    emisor = Column(String, nullable=False)
+    cvc = Column(String,nullable=False)
+    anioVigencia=Column(Integer,nullable=False)
+    mesVigencia=Column(Integer,nullable=False)
+    estatus = Column(Boolean, default=True)
+    tipo=Column(String(20),nullable=False)
+    usuario=relationship('Usuario',backref='tarjetas',lazy='select')
+
+    def consultaIndividual(self,id):
+        return self.query.filter(Tarjeta.idTarjeta== id).first()
+
+    def actualizar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+class Pedido(db.Model):
+    __tablename__ = 'Pedidos'
+    idPedido = Column(Integer, primary_key=True)
+    idComprador = Column(Integer, ForeignKey('Usuarios.idUsuario'), nullable=False)
+    idVendedor = Column(Integer, ForeignKey('Usuarios.idUsuario'), nullable=True)
+    idTarjeta = Column(Integer, ForeignKey('Tarjetas.idTarjeta'),nullable=False)
+    fechaRegistro = Column(String, nullable=False,default=datetime.date.today)
+    fechaAtencion = Column(String, nullable=True)
+    fechaCierre = Column(String, nullable=True)
+    costesEnvio = Column(Float, default=0)
+    subtotal=Column(Float,default=0)
+    totalPagar = Column(Float, default=0)
+    estatus = Column(String, nullable=False,default='Proceso')
+    valoracion=Column(Integer,default=0)
+    comentario=Column(String(200),default='Sin comentarios')
+    productos=relationship('DetallePedido',backref='pedido',lazy='select')
+    def agregar(self,ojson):
+        salida={"estatus":"","mensaje":""}
+        try:
+            self.from_json(ojson)
+            db.session.add(self)
+            db.session.commit()
+            t=Tarjeta()
+            t=t.consultaIndividual(self.idTarjeta)
+            t.saldo=t.saldo-self.totalPagar
+            t.actualizar()
+            salida["estatus"] = "Ok"
+            salida["mensaje"] = "Pedido agregado con exito"
+        except:
+            salida["estatus"]="Error"
+            salida["mensaje"]="Error al agregar el producto a la cesta"
+        return salida
+
+    def from_json(self,ojson):
+        self.idTarjeta=ojson["idTarjeta"]
+        self.idComprador=ojson["idComprador"]
+        self.costesEnvio=ojson["envio"]
+        self.subtotal=ojson["subtotal"]
+        self.totalPagar=ojson["total"]
+        self.productos=[]
+        for p in ojson["carrito"]:
+            dp=json.loads(p)
+            prod=DetallePedido()
+            prod.idProducto=dp.get("idProducto")
+            prod.cantidad = dp.get("cantidad")
+            prod.precio = dp.get("precio")
+            prod.subtotal=dp.get("subtotal")
+            self.productos.append(prod)
+
+
+class DetallePedido(db.Model):
+    __tablename__='DetallesPedidos'
+    idDetalle=Column(Integer,primary_key=True)
+    idPedido=Column(Integer,ForeignKey('Pedidos.idPedido'))
+    idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
+    precio=Column(Float,nullable=False)
+    cantidad=Column(Integer,nullable=False)
+    subtotal=Column(Float,nullable=False)

@@ -21,8 +21,10 @@
           <li><a href="/productos">Productos</a></li>
         </ul>
       </li>
+      {% if current_user.is_authenticated and current_user.is_comprador() %}
+      <li><a href="/carrito"><span class="glyphicon glyphicon-shopping-cart"><span class="badge"><label id="productos">{{current_user.consultarCantidadCarrito()}}</label></span></span></a></li>
+      {% endif %}
     </ul>
-
     <ul class="nav navbar-nav navbar-right">
       {% if current_user.is_authenticated %}
       <li class="dropdown">

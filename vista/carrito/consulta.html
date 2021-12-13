@@ -1,0 +1,117 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block scripts %}
+    {{super()}}
+    <script src="{{url_for('static',filename='js/carrito.js')}}"></script>
+{% endblock %}
+{% block principal %}
+
+<br>
+    <div class="container">
+        <div class="bg bg-primary text-center" style="padding:1px;">
+            <h3>Cesta<span class="label label-default">{{current_user.consultarCantidadCarrito()}}</span></h3>
+        </div>
+        {% if get_flashed_messages() %}
+            <div class="alert alert-success alert-dismissible">
+                {% for message in get_flashed_messages() %}
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>{{message}}</strong>
+                {% endfor %}
+            </div>
+         {% endif %}
+        <div class="row">
+            <div class="col-sm-2">
+                <label><input type="checkbox" id="todos" onclick="seleccionarTodos()">Todos</label>
+        </div>
+            <div class="col-sm-2">
+                <p>Costos de Envio:$&nbsp;</b><label style="color:red" id="costosEnvio">0</label></p>
+            </div>
+            <div class="col-sm-2">
+                <p>Subtotal:$&nbsp;</b><label style="color:red" id="subtotal">0</label></p>
+            </div>
+            <div class="col-sm-2">
+                <p><b>Total: $&nbsp;</b><label style="color:red" id="total">0</label></p>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-danger" onclick="pagar()" data-toggle="modal" data-target="#modal">Pagar ahora</button>
+            </div>
+
+        </div>
+        <ul class="list-group">
+        {% for car in carrito %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="/productos/imagen/{{car.producto.idProducto}}" style="width:100px;heigth:100px;">
+                    <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="{{car.idCarrito}}" name="idCarrito" id="idCarrito{{car.idCarrito}}" onclick="seleccionar({{car.idCarrito}})">
+                        {{car.producto.nombre}}
+                    </label>
+                    <a href="/carrito/eliminar/{{car.idCarrito}}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                     </a>
+                     <a href="#">
+                            <span class="glyphicon glyphicon-edit"></span>
+                     </a>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <input type="hidden" id="idProducto{{car.idCarrito}}" value="{{car.producto.idProducto}}">
+                    <p>Cantidad: <label id="cantidad{{car.idCarrito}}">{{car.cantidad}}</label></p>
+                    <p>Precio: $<label id="precio{{car.idCarrito}}">{{car.producto.precio}}</label></p>
+                    <p>Subtotal: $<label id="subtotal{{car.idCarrito}}">{{car.cantidad * car.producto.precio}}</label></p>
+                    <p>Envio: $<label id="envio{{car.idCarrito}}">{{car.producto.costoEnvio * car.cantidad}}</label></p>
+                </div>
+
+            </div>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <!-- Modal -->
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Aplicando Pago</h4>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" style="display:none" id="notificaciones"></div>
+        <div id="tarjetas" style="display:none">
+            {% if current_user.is_authenticated and current_user.is_comprador() %}
+                <div class="row">
+                    <label>Tarjeta</label>
+                    <select onchange="mostrarTarjeta()" id="tarjeta">
+                        <option value="0">-- Elige la tarjeta --</option>
+                        {% for t in current_user.tarjetas %}
+                            {% if t.estatus %}
+                                <option value="{{t.idTarjeta}}">{{t.noTarjeta}}-${{t.saldo}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row">
+                    <p>Saldo $<label id="saldo"></label></p>
+                    <p>Emisor:<label id="banco"></label></p>
+                    <p>Total:$<label id="totalPedido"></label></p>
+                </div>
+              {% endif %}
+        </div>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-danger" onclick="registrarPedido()" disabled id="btnPagar">Pagar</button>
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
