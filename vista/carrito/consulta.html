@@ -91,7 +91,7 @@
                         <option value="0">-- Elige la tarjeta --</option>
                         {% for t in current_user.tarjetas %}
                             {% if t.estatus %}
-                                <option value="{{t.idTarjeta}}">{{t.noTarjeta}}-${{t.saldo}}</option>
+                                <option value="{{t.idTarjeta}}">{{t.noTarjeta}}-{{t.emisor}}</option>
                             {% endif %}
                         {% endfor %}
                     </select>

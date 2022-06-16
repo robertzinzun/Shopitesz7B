@@ -1,10 +1,18 @@
 import urllib
+from math import ceil
 
 from flask import Flask,render_template,request,flash,redirect,url_for,abort
 from flask_bootstrap import Bootstrap
+from pymysql import OperationalError
+
 from modelo.DAO import Categoria,db,Usuario, Producto, Carrito, Tarjeta, Pedido
 from flask_login import current_user,login_user,logout_user,login_manager,login_required,LoginManager
 import json
+import pdfkit
+import pandas as pd
+from pandas import ExcelWriter
+from sqlalchemy import create_engine
+
 app=Flask(__name__,template_folder='../vista',static_folder='../static')
 Bootstrap(app)
 
@@ -90,6 +98,19 @@ def eliminarCategoria(id):
         return redirect(url_for('categorias'))
     else:
         abort(404)
+@app.route('/categorias/pagina/<int:page>')
+def consultarPaginaCategorias(page=1):
+    try:
+        c=Categoria()
+        paginacion=c.consultarPagina(page)
+        categorias=paginacion.items
+        paginas=paginacion.pages
+    except OperationalError:
+        flash("No hay categorias Registradas")
+        categorias=None
+    return render_template('categorias/categoriasPagina.html',categorias=categorias,paginas=paginas,pagina=page)
+
+
 #fin de seccion de categorias
 #Seccion para la administración de usuarios
 @app.route('/usuarios/iniciarSesion')
@@ -277,6 +298,38 @@ def ruta():
     cad=fecha.split("-")
     cadFecha=cad[2]+"/"+cad[1]+"/"+cad[0]
     return cadFecha
+#Generación de formatos PDF y Excel
+@app.route('/categorias/generarPDF')
+def generarPDF():
+    estatus=False
+    try:
+        categorias = Categoria()
+        html = render_template('categorias/template_pdf.html', categorias=categorias.consultaGeneral())
+        pdfkit.from_string(html, '/Users/roberto/Documents/GitHub/Shopitesz7B/static/docs/categorias.pdf')
+        estatus=True
+        flash('!! Documento generado con exito !!')
+    except:
+        flash('Error al generar el documento, contacta al  Administrador')
+    return render_template('categorias/consulta.html', categorias=categorias.consultaGeneral(),estatus=estatus,tipo='p')
+@app.route('/categorias/generarExcel')
+def generarExcel():
+    estatus = False
+    try:
+        categorias = Categoria()
+        #datos=categorias.generarDatosExcel()
+        engine=create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+        datos=pd.read_sql_query('select idcategoria,nombre from categorias',engine)
+        df=pd.DataFrame(datos)
+        #df = df[['Id', 'Nombre']]
+        writer = ExcelWriter('/Users/roberto/Documents/GitHub/Shopitesz7B/static/docs/categorias.xlsx')
+        df.to_excel(writer, 'Hoja de datos', index=False)
+        writer.save()
+        estatus = True
+        flash('!! Documento generado con exito !!')
+    except:
+        flash('Error al generar el documento, contacta al  Administrador')
+    return render_template('categorias/consulta.html', categorias=categorias.consultaGeneral(), estatus=estatus,tipo='e')
+
 #Seccion de paginas de error
 @app.errorhandler(404)
 def error_404(e):

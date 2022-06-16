@@ -1,0 +1,77 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block principal %}
+<div class="container">
+    <div class="well">
+<h1>Listado de Categorias</h1>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        <a href="/categorias/nuevo">
+           <span class="glyphicon glyphicon-plus"></span>Agregar Categoria
+        </a>
+        {% endif %}
+<table class="table table-striped">
+    <thead>
+        <th>ID</th>
+        <th>NOMBRE</th>
+        <th>IMAGEN</th>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        <th>ESTATUS</th>
+        <th>VER</th>
+        {% endif %}
+    </thead>
+    {% for cat in categorias %}
+        <tr>
+            {% if cat.estatus==True %}
+                <td>{{cat.idCategoria}}</td>
+                <td>{{cat.nombre}}</td>
+                <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
+                {% if current_user.is_authenticated and current_user.is_admin()%}
+                    <td>{{cat.estatus}}</td>
+                    <td>
+                        <a href="/categorias/ver/{{cat.idCategoria}}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                    </td>
+                {% endif %}
+            {% else %}
+                {% if current_user.is_authenticated and current_user.is_admin() and cat.estatus==False%}
+                    <td>{{cat.idCategoria}}</td>
+                    <td>{{cat.nombre}}</td>
+                    <td><img src="/categorias/imagen/{{cat.idCategoria}}" width="100px"></td>
+                    <td>{{cat.estatus}}</td>
+                    <td>
+                        <a href="/categorias/ver/{{cat.idCategoria}}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                    </td>
+                {% endif %}
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+    </div>
+    <ul class="pagination justify-content-center" style="margin:20px 0">
+        {% if pagina <= 1 %}
+            <li  class="page-item disabled" ><a class="page-link" href="#">Anterior</a></li>
+        {% else %}
+            <li><a class="page-link" href="/categorias/pagina/{{pagina-1}}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><a class="page-link" >Pagina <b>{{pagina}}</b> de <b>{{paginas}}</b></a></li>
+        {% if pagina >= paginas %}
+            <li   class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>
+        {% else %}
+            <li><a  class="page-link" href="/categorias/pagina/{{pagina+1}}">Siguiente</a></li>
+        {% endif %}
+    </ul>
+    {% if get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible">
+        {% for message in get_flashed_messages() %}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{message}}</strong>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -34,6 +34,20 @@ class Categoria(db.Model):
     def consultaGeneral(self):
         return self.query.all()
 
+    def consultarPagina(self,pagina):
+        paginacion=self.query.order_by(Categoria.idCategoria.asc()).paginate(pagina,per_page=5,error_out=False)
+        return paginacion
+    def generarDatosExcel(self):
+        datos={'Id':None,'Nombre':None}
+        ids=[]
+        nombres=[]
+        lista=self.consultaGeneral()
+        for c in lista:
+            ids.append(c.idCategoria)
+            nombres.append(c.nombre)
+        datos['Id']=ids
+        datos['Nombre']=nombres
+        return datos
 class Usuario(UserMixin,db.Model):
     __tablename__='Usuarios'
     idUsuario=Column(Integer,primary_key=True)
